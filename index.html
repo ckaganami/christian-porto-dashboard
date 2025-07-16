@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portofolio Project Manager: Christian Sutanto</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Chosen Palette: Calm Professional (Off-white background, dark slate text, muted teal accents) -->
-    <!-- Application Structure Plan: A single-page application with a top navigation bar for smooth scrolling. The structure flows from a Hero section (Profile), to Skills (visual tags), to an interactive Project Gallery (grid of cards opening modals with details), and a final Contact/CV section. This structure guides the user from a general overview to deep-dive evidence. -->
-    <!-- Visualization & Content Choices: Report Info: Project case studies -> Goal: Showcase impact -> Viz/Presentation: Interactive modal with text. -> Interaction: Click on project card to open modal. -> Justification: Focuses attention on a single project story. -->
+    <!-- Application Structure Plan: A single-page application with a top navigation bar for smooth scrolling. The structure flows from a Hero section (Profile), to Skills (visual tags), to an interactive Project Gallery (grid of cards opening modals with details), and a final Contact/CV section. A language switcher (ID/EN) is added to the header. -->
+    <!-- Visualization & Content Choices: Report Info: Project case studies -> Goal: Showcase impact -> Viz/Presentation: Interactive modal with text. -> Interaction: Click on project card to open modal. All text content is now stored in a JavaScript object and dynamically updated based on the selected language. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
@@ -45,6 +44,23 @@
             background-color: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(5px);
         }
+        .lang-btn {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s;
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+        .lang-btn.active {
+            background-color: #0D9488;
+            color: white;
+            border-color: #0D9488;
+        }
+        .lang-btn:not(.active) {
+            background-color: white;
+            color: #475569;
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -52,22 +68,30 @@
     <!-- Header & Navigasi -->
     <header id="header" class="bg-white/80 backdrop-blur-lg fixed top-0 left-0 right-0 z-40 shadow-sm">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="#" id="nav-name" class="text-xl font-bold text-slate-700">Christian's Project Portfolios</a>
-            <nav class="hidden md:flex space-x-8">
-                <a href="#profil" class="nav-link text-slate-600">Profil</a>
-                <a href="#proyek" class="nav-link text-slate-600">Proyek</a>
-                <a href="#keahlian" class="nav-link text-slate-600">Keahlian</a>
-                <a href="#kontak" class="nav-link text-slate-600">Kontak</a>
+            <a href="#" data-lang-key="navTitle" class="text-xl font-bold text-slate-700"></a>
+            <nav class="hidden md:flex items-center space-x-8">
+                <a href="#profil" data-lang-key="navProfile" class="nav-link text-slate-600"></a>
+                <a href="#proyek" data-lang-key="navProjects" class="nav-link text-slate-600"></a>
+                <a href="#keahlian" data-lang-key="navSkills" class="nav-link text-slate-600"></a>
+                <a href="#kontak" data-lang-key="navContact" class="nav-link text-slate-600"></a>
+                <div class="flex space-x-1 bg-slate-100 p-1 rounded-full">
+                    <button id="lang-id" class="lang-btn">ID</button>
+                    <button id="lang-en" class="lang-btn">EN</button>
+                </div>
             </nav>
             <button id="mobile-menu-button" class="md:hidden text-slate-700">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-4 6h4"></path></svg>
             </button>
         </div>
-        <div id="mobile-menu" class="hidden md:hidden bg-white">
-            <a href="#profil" class="nav-link-mobile block py-2 px-6 text-slate-600 hover:bg-teal-50">Profil</a>
-            <a href="#proyek" class="nav-link-mobile block py-2 px-6 text-slate-600 hover:bg-teal-50">Proyek</a>
-            <a href="#keahlian" class="nav-link-mobile block py-2 px-6 text-slate-600 hover:bg-teal-50">Keahlian</a>
-            <a href="#kontak" class="nav-link-mobile block py-2 px-6 text-slate-600 hover:bg-teal-50">Kontak</a>
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t">
+            <a href="#profil" data-lang-key="navProfile" class="nav-link-mobile block py-2 px-6 text-slate-600 hover:bg-teal-50"></a>
+            <a href="#proyek" data-lang-key="navProjects" class="nav-link-mobile block py-2 px-6 text-slate-600 hover:bg-teal-50"></a>
+            <a href="#keahlian" data-lang-key="navSkills" class="nav-link-mobile block py-2 px-6 text-slate-600 hover:bg-teal-50"></a>
+            <a href="#kontak" data-lang-key="navContact" class="nav-link-mobile block py-2 px-6 text-slate-600 hover:bg-teal-50"></a>
+            <div class="flex space-x-2 p-4 justify-center">
+                <button id="mobile-lang-id" class="lang-btn">ID</button>
+                <button id="mobile-lang-en" class="lang-btn">EN</button>
+            </div>
         </div>
     </header>
 
@@ -79,13 +103,11 @@
                 <h1 id="profile-name" class="text-4xl md:text-5xl font-bold text-slate-800 mb-2">
                     Christian Sutanto
                 </h1>
-                <p id="profile-title" class="text-xl text-slate-500 mb-6">Professional Project Manager</p>
-                <p id="profile-summary" class="max-w-3xl mx-auto text-lg text-slate-600 mb-8">
-                    Saya Christian seorang Project Manager dengan 3 tahun pengalaman mengelola project di Blockchain Tecnology StartUp.
-                </p>
+                <p data-lang-key="profileTitle" id="profile-title" class="text-xl text-slate-500 mb-6"></p>
+                <p data-lang-key="profileSummary" id="profile-summary" class="max-w-3xl mx-auto text-lg text-slate-600 mb-8"></p>
                 <div class="flex justify-center space-x-4">
-                    <a href="#proyek" class="btn-primary text-white font-semibold py-3 px-8 rounded-full shadow-md">Lihat Proyek Saya</a>
-                    <a href="#kontak" class="btn-secondary font-semibold py-3 px-8 rounded-full border-2">Hubungi Saya</a>
+                    <a href="#proyek" data-lang-key="profileBtnProjects" class="btn-primary text-white font-semibold py-3 px-8 rounded-full shadow-md"></a>
+                    <a href="#kontak" data-lang-key="profileBtnContact" class="btn-secondary font-semibold py-3 px-8 rounded-full border-2"></a>
                 </div>
             </div>
         </section>
@@ -94,8 +116,8 @@
         <section id="proyek" class="py-20 bg-white">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-12">
-                    <h2 class="text-3xl md:text-4xl font-bold text-slate-800">Proyek Unggulan</h2>
-                    <p class="text-lg text-slate-500 mt-2">Berikut adalah beberapa proyek pilihan yang menunjukkan keahlian saya.</p>
+                    <h2 data-lang-key="projectsTitle" class="text-3xl md:text-4xl font-bold text-slate-800"></h2>
+                    <p data-lang-key="projectsSubtitle" class="text-lg text-slate-500 mt-2"></p>
                 </div>
                 <div id="project-gallery" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <!-- Project cards will be injected here by JavaScript -->
@@ -107,21 +129,17 @@
         <section id="keahlian" class="py-20">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-12">
-                    <h2 class="text-3xl md:text-4xl font-bold text-slate-800">Keahlian & Kompetensi</h2>
-                    <p class="text-lg text-slate-500 mt-2">Kumpulan teknologi, metodologi, dan kemampuan interpersonal yang saya kuasai.</p>
+                    <h2 data-lang-key="skillsTitle" class="text-3xl md:text-4xl font-bold text-slate-800"></h2>
+                    <p data-lang-key="skillsSubtitle" class="text-lg text-slate-500 mt-2"></p>
                 </div>
                 <div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-10">
                     <div>
-                        <h3 class="text-2xl font-semibold text-slate-700 mb-4 text-center md:text-left">Hard Skills (Teknis)</h3>
-                        <div id="hard-skills" class="flex flex-wrap gap-3 justify-center md:justify-start">
-                           <!-- Hard skills will be injected here -->
-                        </div>
+                        <h3 data-lang-key="hardSkillsTitle" class="text-2xl font-semibold text-slate-700 mb-4 text-center md:text-left"></h3>
+                        <div id="hard-skills-container" class="flex flex-wrap gap-3 justify-center md:justify-start"></div>
                     </div>
                     <div>
-                        <h3 class="text-2xl font-semibold text-slate-700 mb-4 text-center md:text-left">Soft Skills (Interpersonal)</h3>
-                        <div id="soft-skills" class="flex flex-wrap gap-3 justify-center md:justify-start">
-                            <!-- Soft skills will be injected here -->
-                        </div>
+                        <h3 data-lang-key="softSkillsTitle" class="text-2xl font-semibold text-slate-700 mb-4 text-center md:text-left"></h3>
+                        <div id="soft-skills-container" class="flex flex-wrap gap-3 justify-center md:justify-start"></div>
                     </div>
                 </div>
             </div>
@@ -130,15 +148,15 @@
         <!-- Section Kontak & CV -->
         <footer id="kontak" class="py-20 bg-slate-800 text-white">
             <div class="container mx-auto px-6 text-center">
-                <h2 class="text-3xl md:text-4xl font-bold">Mari Berkolaborasi</h2>
-                <p class="text-lg text-slate-300 mt-4 mb-8 max-w-2xl mx-auto">Saya selalu terbuka untuk diskusi mengenai proyek baru, peluang kreatif, atau kesempatan untuk menjadi bagian dari visi Anda.</p>
+                <h2 data-lang-key="contactTitle" class="text-3xl md:text-4xl font-bold"></h2>
+                <p data-lang-key="contactSubtitle" class="text-lg text-slate-300 mt-4 mb-8 max-w-2xl mx-auto"></p>
                 <div class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-6 mb-8 text-slate-300">
                     <p>📧 christian0100100@gmail.com</p>
                     <p>📞 +62 896 5050 6207</p>
                     <a href="https://www.linkedin.com/in/christian-sutanto-439979332/" target="_blank" class="hover:text-teal-400 transition">🌐 LinkedIn - Christian </a>
                 </div>
                 <div class="flex justify-center items-center flex-wrap gap-4">
-                     <a href="https://drive.google.com/file/d/1lR28wZ-0riSPXTZXVH_ih8lD8uHiqFbF/view?usp=drive_link" class="btn-primary bg-teal-500 hover:bg-teal-400 text-white font-semibold py-3 px-8 rounded-full shadow-lg" download>Unduh CV Saya</a>
+                     <a href="https://drive.google.com/file/d/1lR28wZ-0riSPXTZXVH_ih8lD8uHiqFbF/view?usp=drive_link" data-lang-key="contactBtnCV" class="btn-primary bg-teal-500 hover:bg-teal-400 text-white font-semibold py-3 px-8 rounded-full shadow-lg" download></a>
                 </div>
             </div>
         </footer>
@@ -153,108 +171,172 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', function () {
-        
-        const portfolioData = {
-            name: "Christian's Project Portfolios",
-            title: "Professional Project Manager",
-            summary: "Saya Christian seorang Project Manager dengan 3 tahun pengalaman mengelola project di Blockchain Tecnology StartUp.",
-            skills: {
-                hard: [
-                    "Perencanaan Proyek", "Manajemen Risiko", "Penjadwalan Proyek",
-                    "Manajemen Kualitas", "Agile (Scrum, Kanban)", "Waterfall"
-                    , "Jira", "MS Project", "Smartsheet", "Visual Studio Code", 
-                    "Figma", "Canva", "Adobe Photoshop", "Adobe Premiere"
-                ],
-                soft: [
-                    "Kepemimpinan", "Manajemen Tim", "Komunikasi Efektif", "Manajemen Pemangku Kepentingan",
-                    "Negosiasi", "Resolusi Konflik", "Pemecahan Masalah", "Berpikir Kritis", "Adaptabilitas"
-                ]
+
+        const translations = {
+            id: {
+                navTitle: "Portofolio Proyek Christian",
+                navProfile: "Profil",
+                navProjects: "Proyek",
+                navSkills: "Keahlian",
+                navContact: "Kontak",
+                profileTitle: "Professional Project Manager",
+                profileSummary: "Project Manager dengan 3 tahun pengalaman mengelola project di Blockchain Tecnology StartUp.",
+                profileBtnProjects: "Lihat Proyek Saya",
+                profileBtnContact: "Hubungi Saya",
+                projectsTitle: "Proyek Unggulan",
+                projectsSubtitle: "Berikut adalah beberapa proyek pilihan yang menunjukkan keahlian saya.",
+                skillsTitle: "Keahlian & Kompetensi",
+                skillsSubtitle: "Kumpulan teknologi, metodologi, dan kemampuan interpersonal yang saya kuasai.",
+                hardSkillsTitle: "Hard Skills (Teknis)",
+                softSkillsTitle: "Soft Skills (Interpersonal)",
+                contactTitle: "Mari Berkolaborasi",
+                contactSubtitle: "Saya selalu terbuka untuk diskusi mengenai proyek baru, peluang kreatif, atau kesempatan untuk menjadi bagian dari visi Anda.",
+                contactBtnCV: "Unduh CV Saya",
+                modalCompany: "Perusahaan",
+                modalIndustry: "Industri",
+                modalDuration: "Durasi",
+                modalSitAndChal: "Situasi & Tantangan",
+                modalContext: "Konteks",
+                modalChallenge: "Tantangan Utama",
+                modalAction: "Tindakan yang Saya Ambil",
+                modalPlanning: "Perencanaan",
+                modalExecution: "Eksekusi & Komunikasi",
+                modalRisk: "Manajemen Risiko",
+                modalResult: "Hasil & Dampak",
+                modalQuantResult: "Hasil Kuantitatif",
+                modalQualResult: "Hasil Kualitatif",
+                hardSkills: ["Agile (Scrum, Kanban)", "Waterfall", "Notion", "ClickUp", "Jira", "MS Project", "Visual Studio Code", "Figma", "Canva", "Adobe Photoshop", "Adobe Premiere"],
+                softSkills: ["Perencanaan Proyek", "Manajemen Risiko", "Penjadwalan Proyek"],
+                project1_title: "Pengembangan Aplikasi SmartShield - Data Integrity Berbasis Blockchain",
+                project1_company: "PT Rantai Data Pintar",
+                project1_industry: "IT Solution Software",
+                project1_duration: "4 Bulan",
+                project1_situation: "Perlunya meningkatkan integritas dan keamanan dari dokumen penting milik perusahaan/klien.",
+                project1_challenge: "(1) Jadwal peluncuran yang sangat ketat memenuhi permintaan user. (2) Kebutuhan untuk mengintegrasikan sistem dengan ekosistem yang memiliki API berbeda. (3) Mengelola perubahan ekspektasi dari tim produk selama proyek berjalan.",
+                project1_action_planning: "Saya mengembangkan rencana proyek terperinci menggunakan Microsoft Project, mengidentifikasi semua epics dan user stories, serta menetapkan milestones yang jelas.",
+                project1_action_execution: "Mengadopsi kerangka kerja Waterfall, saya memfasilitasi sprint planning, sprint reviews, hingga testing dari aplikasi. Saya juga mengirimkan laporan kemajuan mingguan kepada para direksi untuk memastikan transparansi penuh.",
+                project1_action_risk: "Saya membuat risk register dan secara proaktif mengatasi risiko keterlambatan vendor dengan mengadakan rapat koordinasi dua kali seminggu.",
+                project1_results_quantitative: ["Proyek selesai tepat waktu memenuhi jadwal yang ketat.", "Meningkatkan integritas data dokumen secara signifikan menggunakan blockchain.", "Berhasil diintegrasikan dengan API eksternal secara fleksibel."],
+                project1_results_qualitative: ["Meningkatkan keamanan untuk dokumen penting klien.", "Membangun solusi inovatif untuk integritas data."],
+                project2_title: "Implementasi SmartShield Blockchain untuk Dokumen Kontrak",
+                project2_company: "PT Bank Tabungan Negara, Tbk.",
+                project2_industry: "Perbankan",
+                project2_duration: "12 Bulan",
+                project2_situation: "Pihak BTN ingin meningkatkan dan menjaga integritas dari dokumen Kontrak yang dilaksanakan oleh pihak BTN dengan Vendor-vendor yang bekerja sama dengan BTN menggunakan teknologi Blockchain.",
+                project2_challenge: "(1) Implementasi LDAP yang merupakan requirement baru dari user membutuhkan pengujian tambahan. (2) Tertundanya menerima akses ke sistem BTN untuk konfigurasi SharePoint Plugin.",
+                project2_action_planning: "Saya memimpin tim untuk melakukan implementasi solusi blockchain ini. Rencana proyek dibuat dengan pendekatan waterfall untuk meminimalkan gangguan operasional.",
+                project2_action_execution: "Saya berkoordinasi dengan Project Manager dari vendor untuk membantu koordinasi dengan tim user, saya membuat reporting mingguan untuk melaporkan kinerja projek dan planning untuk next step.",
+                project2_action_risk: "(1) Saya berkoordinasi secara proaktif terkait penanganan requirement tim developer untuk delivery integrasi LDAP. (2) Berkoordinasi dengan PM vendor dan tim sales untuk penetrasi lebih cepat jika terjadi prolonged delay di level operational.",
+                project2_results_quantitative: ["Efisiensi proses pelaporan keuangan meningkat sebesar 60%.", "Mengurangi kesalahan input data inventaris sebesar 95%.", "Proyek selesai 3% di bawah anggaran yang ditetapkan.", "Waktu siklus pemesanan hingga pengiriman berkurang 20%."],
+                project2_results_qualitative: ["Menyediakan satu sumber kebenaran (single source of truth) untuk data perusahaan.", "Memungkinkan pengambilan keputusan strategis yang lebih cepat dan berbasis data."],
             },
+            en: {
+                navTitle: "Christian's Project Portfolios",
+                navProfile: "Profile",
+                navProjects: "Projects",
+                navSkills: "Skills",
+                navContact: "Contact",
+                profileTitle: "Professional Project Manager",
+                profileSummary: "Project Manager with 3 years of experience managing projects in a Blockchain Technology StartUp.",
+                profileBtnProjects: "View My Projects",
+                profileBtnContact: "Contact Me",
+                projectsTitle: "Featured Projects",
+                projectsSubtitle: "Here are some selected projects that showcase my expertise.",
+                skillsTitle: "Skills & Competencies",
+                skillsSubtitle: "A collection of technologies, methodologies, and interpersonal skills I have mastered.",
+                hardSkillsTitle: "Hard Skills (Technical)",
+                softSkillsTitle: "Soft Skills (Interpersonal)",
+                contactTitle: "Let's Collaborate",
+                contactSubtitle: "I am always open to discussing new projects, creative opportunities, or chances to be part of your vision.",
+                contactBtnCV: "Download My CV",
+                modalCompany: "Company",
+                modalIndustry: "Industry",
+                modalDuration: "Duration",
+                modalSitAndChal: "Situation & Challenge",
+                modalContext: "Context",
+                modalChallenge: "Main Challenges",
+                modalAction: "Actions I Took",
+                modalPlanning: "Planning",
+                modalExecution: "Execution & Communication",
+                modalRisk: "Risk Management",
+                modalResult: "Results & Impact",
+                modalQuantResult: "Quantitative Results",
+                modalQualResult: "Qualitative Results",
+                hardSkills: ["Agile (Scrum, Kanban)", "Waterfall", "Notion", "ClickUp", "Jira", "MS Project", "Visual Studio Code", "Figma", "Canva", "Adobe Photoshop", "Adobe Premiere"],
+                softSkills: ["Project Planning", "Risk Management", "Project Scheduling"],
+                project1_title: "SmartShield Application Development - Blockchain-Based Data Integrity",
+                project1_company: "PT Rantai Data Pintar",
+                project1_industry: "IT Solution Software",
+                project1_duration: "4 Months",
+                project1_situation: "The need to improve the integrity and security of important company/client documents.",
+                project1_challenge: "(1) A very tight launch schedule to meet user demands. (2) The need to integrate the system with an ecosystem having different APIs. (3) Managing changing expectations from the product team during the project.",
+                project1_action_planning: "I developed a detailed project plan using Microsoft Project, identified all epics and user stories, and set clear milestones.",
+                project1_action_execution: "Adopting the Waterfall framework, I facilitated sprint planning, sprint reviews, and application testing. I also submitted weekly progress reports to the directors to ensure full transparency.",
+                project1_action_risk: "I created a risk register and proactively addressed the risk of vendor delays by holding bi-weekly coordination meetings.",
+                project1_results_quantitative: ["Project completed on time, meeting the tight schedule.", "Significantly improved document data integrity using blockchain.", "Successfully integrated with external APIs flexibly."],
+                project1_results_qualitative: ["Enhanced security for critical client documents.", "Built an innovative solution for data integrity."],
+                project2_title: "Implementation of SmartShield Blockchain for Contract Documents",
+                project2_company: "PT Bank Tabungan Negara, Tbk.",
+                project2_industry: "Banking",
+                project2_duration: "12 Months",
+                project2_situation: "BTN wanted to improve and maintain the integrity of contract documents executed between BTN and its vendors using blockchain technology.",
+                project2_challenge: "(1) LDAP implementation, a new user requirement, needed additional testing. (2) Delays in receiving access to BTN's system for SharePoint Plugin configuration.",
+                project2_action_planning: "I led the team to implement this blockchain solution. The project plan was created with a waterfall approach to minimize operational disruption.",
+                project2_action_execution: "I coordinated with the vendor's Project Manager to assist with user team coordination, and I created weekly reports to report on project performance and plan next steps.",
+                project2_action_risk: "(1) I proactively coordinated the handling of developer requirements for LDAP integration delivery. (2) Coordinated with the vendor's PM and sales team for faster penetration in case of prolonged operational delays.",
+                project2_results_quantitative: ["Financial reporting process efficiency increased by 60%.", "Reduced inventory data entry errors by 95%.", "Project completed 3% under the established budget.", "Order-to-delivery cycle time reduced by 20%."],
+                project2_results_qualitative: ["Provided a single source of truth for company data.", "Enabled faster, data-driven strategic decision-making."],
+            }
+        };
+        
+        const appData = {
             projects: [
-                {
-                    id: 1,
-                    title: "Pengembangan Aplikasi SmartShield - Data Integrity Berbasis Blockchain",
-                    company: "PT Rantai Data Pintar",
-                    industry: "IT Solution Software",
-                    duration: "4 Bulan",
-                    budget: "Rp 200.000.000,00",
-                    teamSize: 4,
-                    imageUrl: "asset/pic-smartshield-logo.jpg",
-                    situation: "Perlunya meningkatkan integritas dan keamanan dari dokumen penting milik perusahaan/klien.",
-                    challenge: "(1) Jadwal peluncuran yang sangat ketat memenuhi permintaan user. (2) Kebutuhan untuk mengintegrasikan sistem dengan ekosistem yang memiliki API berbeda. (3) Mengelola perubahan ekspektasi dari tim produk selama proyek berjalan.",
-                    action: {
-                        planning: "Saya mengembangkan rencana proyek terperinci menggunakan Microsoft Project, mengidentifikasi semua epics dan user stories, serta menetapkan milestones yang jelas.",
-                        execution: "Mengadopsi kerangka kerja Waterfall, saya memfasilitasi sprint planning, sprint reviews, hingga testing dari aplikasi. Saya juga mengirimkan laporan kemajuan mingguan kepada para direksi untuk memastikan transparansi penuh.",
-                        risk: "Saya membuat risk register dan secara proaktif mengatasi risiko keterlambatan vendor dengan mengadakan rapat koordinasi dua kali seminggu."
-                    },
-                    results: {
-                        quantitative: [
-                            "Proyek selesai tepat waktu memenuhi jadwal yang ketat.",
-                            "Meningkatkan integritas data dokumen secara signifikan menggunakan blockchain.",
-                            "Berhasil diintegrasikan dengan API eksternal secara fleksibel."
-                        ],
-                        qualitative: [
-                            "Meningkatkan keamanan untuk dokumen penting klien.",
-                            "Membangun solusi inovatif untuk integritas data."
-                        ]
-                    }
-                },
-                {
-                    id: 2,
-                    title: "Implementasi SmartShield Blockchain Data Integirity untuk Dokumen Kontrak ",
-                    company: "PT Bank Tabungan Negara, Tbk.",
-                    industry: "Banking",
-                    duration: "12 Bulan",
-                    budget: "Rp 1.300.000.000,00",
-                    teamSize: 5,
-                    imageUrl: "asset/pic-btn-logo.png",
-                    situation: "Pihak BTN ingin meningkatkan dan menjaga integritas dari dokumen Kontrak yang dilaksanakan oleh pihak BTN dengan Vendor-vendor yang bekerja sama dengan BTN menggunakan teknologi Blockchain.",
-                    challenge: "(1) Implementasi LDAP yang merupakan requirement baru dari user membutuhkan pengujian tambahan, (2) Tertundanya menerima akses ke sistem BTN untuk konfigurasi SharePoint Plugin",
-                    action: {
-                        planning: "Saya memimpin tim untuk melakukan implementasi solusi blockchain ini. Rencana proyek dibuat dengan pendekatan waterfall untuk meminimalkan gangguan operasional.",
-                        execution: "Saya berkoordinasi dengan Project Manager dari vendor untuk membantu koordinasi dengan tim user, saya membuat reporting mingguan untuk melaporkan kinerja projek dan planning untuk next step",
-                        risk: "(1) Saya berkoordinasi secara proaktif terkait penanganan requirement tim developer untuk delivery integrasi LDAP, (2) Berkoordinasi dengan PM vendor dan tim sales untuk penetrasi lebih cepat jika terjadi prolonged delay di level operational" 
-                    },
-                    results: {
-                        quantitative: [
-                            "Efisiensi proses pelaporan keuangan meningkat sebesar 60%.",
-                            "Mengurangi kesalahan input data inventaris sebesar 95%.",
-                            "Proyek selesai 3% di bawah anggaran yang ditetapkan.",
-                            "Waktu siklus pemesanan hingga pengiriman berkurang 20%."
-                        ],
-                        qualitative: [
-                            "Menyediakan satu sumber kebenaran (single source of truth) untuk data perusahaan.",
-                            "Memungkinkan pengambilan keputusan strategis yang lebih cepat dan berbasis data."
-                        ]
-                    }
-                }
+                { id: 1, imageUrl: "asset/pic-smartshield-logo.jpg" },
+                { id: 2, imageUrl: "asset/pic-btn-logo.png" }
             ]
         };
 
         const projectGallery = document.getElementById('project-gallery');
         const projectModal = document.getElementById('project-modal');
         const modalContent = document.getElementById('modal-content');
-        
-        function populateProfile() {
-            document.getElementById('nav-name').textContent = portfolioData.name;
-            const profileName = document.getElementById('profile-name');
-            profileName.childNodes[0].nodeValue = "Christian Sutanto";
-            document.getElementById('profile-title').textContent = portfolioData.title;
-            document.getElementById('profile-summary').textContent = portfolioData.summary;
-        }
-        
-        function populateSkills() {
-            const hardSkillsContainer = document.getElementById('hard-skills');
-            const softSkillsContainer = document.getElementById('soft-skills');
+        let currentLang = 'id';
 
-            portfolioData.skills.hard.forEach(skill => {
+        function updateContent(lang) {
+            currentLang = lang;
+            document.documentElement.lang = lang;
+            
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                if (translations[lang][key]) {
+                    el.textContent = translations[lang][key];
+                }
+            });
+
+            populateSkills(lang);
+            populateProjectGallery(lang);
+            updateLangButtons();
+        }
+
+        function updateLangButtons() {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.id.includes(currentLang));
+            });
+        }
+
+        function populateSkills(lang) {
+            const hardSkillsContainer = document.getElementById('hard-skills-container');
+            const softSkillsContainer = document.getElementById('soft-skills-container');
+            hardSkillsContainer.innerHTML = '';
+            softSkillsContainer.innerHTML = '';
+
+            translations[lang].hardSkills.forEach(skill => {
                 const skillTag = document.createElement('span');
                 skillTag.className = 'bg-teal-100 text-teal-800 text-sm font-medium px-3 py-1 rounded-full';
                 skillTag.textContent = skill;
                 hardSkillsContainer.appendChild(skillTag);
             });
 
-            portfolioData.skills.soft.forEach(skill => {
+            translations[lang].softSkills.forEach(skill => {
                 const skillTag = document.createElement('span');
                 skillTag.className = 'bg-sky-100 text-sky-800 text-sm font-medium px-3 py-1 rounded-full';
                 skillTag.textContent = skill;
@@ -262,61 +344,66 @@
             });
         }
 
-        function createProjectCard(project) {
-            const card = document.createElement('div');
-            card.className = 'bg-white rounded-lg shadow-md overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 cursor-pointer';
-            card.innerHTML = `
-                <img src="${project.imageUrl}" alt="${project.title}" class="w-full h-48 object-cover">
-                <div class="p-6">
-                    <h3 class="text-xl font-semibold text-slate-800 mb-2">${project.title}</h3>
-                    <p class="text-slate-500">${project.company} - ${project.industry}</p>
-                </div>
-            `;
-            card.addEventListener('click', () => openProjectModal(project.id));
-            projectGallery.appendChild(card);
+        function populateProjectGallery(lang) {
+            projectGallery.innerHTML = '';
+            appData.projects.forEach(projectData => {
+                const langKey = `project${projectData.id}`;
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-lg shadow-md overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 cursor-pointer';
+                card.innerHTML = `
+                    <img src="${projectData.imageUrl}" alt="${translations[lang][`${langKey}_title`]}" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-slate-800 mb-2">${translations[lang][`${langKey}_title`]}</h3>
+                        <p class="text-slate-500">${translations[lang][`${langKey}_company`]} - ${translations[lang][`${langKey}_industry`]}</p>
+                    </div>
+                `;
+                card.addEventListener('click', () => openProjectModal(projectData.id));
+                projectGallery.appendChild(card);
+            });
         }
 
         function openProjectModal(projectId) {
-            const project = portfolioData.projects.find(p => p.id === projectId);
+            const langKey = `project${projectId}`;
+            const project = translations[currentLang];
             if (!project) return;
             
             modalContent.innerHTML = `
                 <button id="close-modal" class="absolute top-4 right-4 text-slate-500 hover:text-slate-800 text-3xl">&times;</button>
                 <div class="p-6 md:p-8">
-                    <h2 class="text-3xl font-bold text-slate-800 mb-2">${project.title}</h2>
+                    <h2 class="text-3xl font-bold text-slate-800 mb-2">${project[`${langKey}_title`]}</h2>
                     <div class="flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-500 mb-6">
-                        <span><strong>Perusahaan:</strong> ${project.company}</span>
-                        <span><strong>Industri:</strong> ${project.industry}</span>
-                        <span><strong>Durasi:</strong> ${project.duration}</span>
+                        <span><strong>${translations[currentLang].modalCompany}:</strong> ${project[`${langKey}_company`]}</span>
+                        <span><strong>${translations[currentLang].modalIndustry}:</strong> ${project[`${langKey}_industry`]}</span>
+                        <span><strong>${translations[currentLang].modalDuration}:</strong> ${project[`${langKey}_duration`]}</span>
                     </div>
 
                     <div class="space-y-6">
                         <div>
-                            <h3 class="text-xl font-semibold text-teal-700 mb-2 border-b-2 border-teal-200 pb-1">Situasi & Tantangan</h3>
-                            <p class="text-slate-600 mb-2"><strong>Konteks:</strong> ${project.situation}</p>
-                            <p class="text-slate-600"><strong>Tantangan Utama:</strong> ${project.challenge}</p>
+                            <h3 class="text-xl font-semibold text-teal-700 mb-2 border-b-2 border-teal-200 pb-1">${translations[currentLang].modalSitAndChal}</h3>
+                            <p class="text-slate-600 mb-2"><strong>${translations[currentLang].modalContext}:</strong> ${project[`${langKey}_situation`]}</p>
+                            <p class="text-slate-600"><strong>${translations[currentLang].modalChallenge}:</strong> ${project[`${langKey}_challenge`]}</p>
                         </div>
                         <div>
-                            <h3 class="text-xl font-semibold text-teal-700 mb-2 border-b-2 border-teal-200 pb-1">Tindakan yang Saya Ambil</h3>
+                            <h3 class="text-xl font-semibold text-teal-700 mb-2 border-b-2 border-teal-200 pb-1">${translations[currentLang].modalAction}</h3>
                             <ul class="list-disc list-inside space-y-2 text-slate-600">
-                                <li><strong>Perencanaan:</strong> ${project.action.planning}</li>
-                                <li><strong>Eksekusi & Komunikasi:</strong> ${project.action.execution}</li>
-                                <li><strong>Manajemen Risiko & Anggaran:</strong> ${project.action.risk}</li>
+                                <li><strong>${translations[currentLang].modalPlanning}:</strong> ${project[`${langKey}_action_planning`]}</li>
+                                <li><strong>${translations[currentLang].modalExecution}:</strong> ${project[`${langKey}_action_execution`]}</li>
+                                <li><strong>${translations[currentLang].modalRisk}:</strong> ${project[`${langKey}_action_risk`]}</li>
                             </ul>
                         </div>
                         <div>
-                            <h3 class="text-xl font-semibold text-teal-700 mb-2 border-b-2 border-teal-200 pb-1">Hasil & Dampak</h3>
+                            <h3 class="text-xl font-semibold text-teal-700 mb-2 border-b-2 border-teal-200 pb-1">${translations[currentLang].modalResult}</h3>
                             <div class="grid md:grid-cols-2 gap-6">
                                 <div>
-                                    <h4 class="text-lg font-semibold text-slate-700 mb-2">Hasil Kuantitatif</h4>
+                                    <h4 class="text-lg font-semibold text-slate-700 mb-2">${translations[currentLang].modalQuantResult}</h4>
                                     <ul class="list-disc list-inside space-y-1 text-slate-600">
-                                        ${project.results && project.results.quantitative ? project.results.quantitative.map(item => `<li>${item}</li>`).join('') : ''}
+                                        ${project[`${langKey}_results_quantitative`].map(item => `<li>${item}</li>`).join('')}
                                     </ul>
                                 </div>
                                 <div>
-                                    <h4 class="text-lg font-semibold text-slate-700 mb-2">Hasil Kualitatif</h4>
+                                    <h4 class="text-lg font-semibold text-slate-700 mb-2">${translations[currentLang].modalQualResult}</h4>
                                     <ul class="list-disc list-inside space-y-1 text-slate-600">
-                                        ${project.results && project.results.qualitative ? project.results.qualitative.map(item => `<li>${item}</li>`).join('') : ''}
+                                        ${project[`${langKey}_results_qualitative`].map(item => `<li>${item}</li>`).join('')}
                                     </ul>
                                 </div>
                             </div>
@@ -348,22 +435,26 @@
         document.querySelectorAll('.nav-link-mobile').forEach(link => {
             link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
         });
+        
+        // Language Switcher Logic
+        ['lang-id', 'mobile-lang-id'].forEach(id => document.getElementById(id).addEventListener('click', () => updateContent('id')));
+        ['lang-en', 'mobile-lang-en'].forEach(id => document.getElementById(id).addEventListener('click', () => updateContent('en')));
 
         // Event listeners for closing modals
         window.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                if (!projectModal.classList.contains('hidden')) closeProjectModal();
+            if (e.key === 'Escape' && !projectModal.classList.contains('hidden')) {
+                closeProjectModal();
             }
         });
 
         projectModal.addEventListener('click', (e) => {
-            if (e.target === projectModal) closeProjectModal();
+            if (e.target === projectModal) {
+                closeProjectModal();
+            }
         });
 
         // Initial Population
-        populateProfile();
-        portfolioData.projects.forEach(createProjectCard);
-        populateSkills();
+        updateContent('id'); // Load with default language
     });
     </script>
 </body>
